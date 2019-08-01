@@ -61,7 +61,7 @@ public class CustomLevelBuilder: MonoBehaviour {
     public List<Vector3Int> prefs;
     public Tilemap tilemap;
 
-    BuildObj currObj;
+    int currObj;
     public ObjectDataBase obd;
     public GameObject ItemButtonPrefab, ItemList;
 
@@ -98,18 +98,27 @@ public class CustomLevelBuilder: MonoBehaviour {
                 }
             }
 
-        holders = new GameObject[obd.odb.Count];
-       foreach (ENUMObjPair en in obd.odb) {
-            GameObject gem = GameObject.Instantiate(ItemButtonPrefab, Vector3.zero, Quaternion.identity, ItemList.transform);
-            gem.GetComponent<ItemButton>().init(en.sprite, en.buildObj);
-            gem = holders[(int)en.buildObj] = GameObject.Instantiate(en.editor, Vector3.zero, Quaternion.identity, transform);
+       holders = new GameObject[obd.odb.Count];
+        for (int i = 0; i < obd.odb.Count; i++) { 
+            GameObject gem;
+            holders[i] = GameObject.Instantiate(obd.odb[i].editor, Vector3.zero, Quaternion.identity, transform);
+            gem = holders[i];
             NeutralizeObj(gem);
             gem.SetActive(false);
+            gem = GameObject.Instantiate(ItemButtonPrefab, Vector3.zero, Quaternion.identity, ItemList.transform);
+            if (holders[i].GetComponent<SpriteRenderer>() != null) {
+                gem.GetComponent<ItemButton>().init(holders[i].GetComponent<SpriteRenderer>().sprite, i);
+            } else {
+                gem.GetComponent<ItemButton>().init(obd.odb[i].Backup, i);
+
+            }
+
+
         }
         
     }
 
-    public void ChangeObj(BuildObj b) {
+    public void ChangeObj(int b) {
         currObj = b;
         activeObj.SetActive(false);
         activeObj = holders[(int)b];
@@ -139,12 +148,8 @@ public class CustomLevelBuilder: MonoBehaviour {
             }
             else {
 
-                GameObject gem = null; 
-                foreach(ENUMObjPair e in obd.odb) {
-                    if (currObj == e.buildObj) {
-                        gem = e.editor;
-                    }
-                }
+                GameObject gem = obd.odb[currObj].editor; 
+                
 
                 Vector3 place = tilemap.CellToWorld(tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition)));
 

@@ -6,10 +6,13 @@ using UnityEngine.UI;
 public class ItemButton : MonoBehaviour
 {
     public Image Sprite;
-    public BuildObj b;
+    public int b;
 
-    public void init(Sprite s, BuildObj b1) {
-        Sprite.sprite = s;
+    public void init(Sprite s, int b1) {
+        
+        
+            Sprite.sprite = s;
+        
         b = b1;
     }
 
