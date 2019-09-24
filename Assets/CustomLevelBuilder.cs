@@ -56,14 +56,15 @@ public class CustomLevelBuilder: MonoBehaviour {
     GameObject[] holders;
 
     JSONLevelData data;
-    public InputField textName;
+    public InputField textName, deathField, timeField;
     public List<Vector3Int> tiles;
     public List<Vector3Int> prefs;
     public Tilemap tilemap;
 
     int currObj;
     public ObjectDataBase obd;
-    public GameObject ItemButtonPrefab, ItemList;
+    public GameObject ItemButtonPrefab, ItemList, SaveMenu;
+    public SceneSwitcher sceneSwitcher;
 
     public int ObjectCount = 0;
     
@@ -199,11 +200,17 @@ public class CustomLevelBuilder: MonoBehaviour {
 
     }
 
+    public void ShowSaveMenu() {
+        SaveMenu.SetActive(true);
+    }
+
 
     public void ConvertData() {
 
         data.name = textName.text;
         data.tiles = tiles;
+        data.numberOfDeaths = int.Parse(deathField.text);
+        data.seconds = int.Parse(timeField.text);
         data.objects = prefs;
         string LevelPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/DieDieAgain/Custom_Levels";
         
@@ -211,6 +218,7 @@ public class CustomLevelBuilder: MonoBehaviour {
 
         if (textName.text != "")
         File.WriteAllText(LevelPath + "/" + textName.text + ".json", Data);
+        sceneSwitcher.LoadScene("MainMenu");
     }
 
 }
