@@ -213,6 +213,10 @@ public class CustomLevelBuilder: MonoBehaviour {
         data.seconds = int.Parse(timeField.text);
         data.objects = prefs;
         string LevelPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "/DieDieAgain/Custom_Levels";
+
+        if (!Directory.Exists(LevelPath)) {
+            Directory.CreateDirectory(LevelPath);
+        }
         
         string Data = JsonUtility.ToJson(data);
 
